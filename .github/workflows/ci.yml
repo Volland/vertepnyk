@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: vertepnyk
+      # Until @vertep/web is on npm the workspace links the sibling vertep checkout
+      # (see pnpm-workspace.yaml overrides); build its JavaScript and WebAssembly packages.
+      - uses: actions/checkout@v4
+        with:
+          repository: Volland/vertep
+          path: vertep
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: vertep
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - name: Build @vertep/web
+        working-directory: vertep/bindings/js
+        run: npm ci && npm run build
+      - name: Install
+        working-directory: vertepnyk
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        working-directory: vertepnyk
+        run: pnpm -r run typecheck
+      - name: Unit and integration tests
+        working-directory: vertepnyk
+        run: pnpm test
+      - name: Install Playwright browsers
+        working-directory: vertepnyk
+        run: pnpm --filter @vertepnyk/web-shell exec playwright install --with-deps chromium
+      - name: End-to-end tests
+        working-directory: vertepnyk
+        run: pnpm test:e2e
+
+  graph:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: OpenSpec
+        run: npx -y @fission-ai/openspec@1.9.0 validate --all --strict

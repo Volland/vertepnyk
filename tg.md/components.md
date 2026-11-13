@@ -22,7 +22,7 @@ The host-independent chart model: SCXML and YAML syntax trees, the semantic view
 Automatic layout of nested and parallel charts with elkjs in a Web Worker, incremental and cancellable.
 
 - provides:: [[capabilities#Chart layout]] {confidence: partial, note: "automatic layout"}
-- uses:: [[components#core]] {kind: required}
+- uses:: [[components#core]] {kind: required, note: "types only"}
 - realizes:: [[decisions#SolidJS and SVG render the canvas]] {confidence: partial, note: "the elkjs half"}
 - scheduled_in:: [[roadmap#M1 Designer core]]
 
@@ -127,3 +127,5 @@ Upstream: vertep's `@vertep/web` npm package, the SCXML interpreter, shell and j
 Upstream: vertep's `@vertep/dm-ecma` npm package, the ECMAScript datamodel worker build.
 
 - scheduled_in:: [[roadmap#M0 Upstream prerequisites]]
+
+Implemented 2026-11-13: `computeLayout` (elkjs layered, hierarchical, incremental with `keepExisting`, `scope`), `createLayoutWorker` with cancellation and an in-process fallback; a 500-state chart lays out in about 1 s off the UI thread.

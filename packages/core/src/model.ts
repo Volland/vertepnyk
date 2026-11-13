@@ -136,7 +136,7 @@ export interface StateLayout {
   readonly collapsed?: boolean;
 }
 
-/** Layout of one transition: bend points (absolute) and label position (absolute). */
+/** Layout of one transition: the full absolute polyline (start, bends, end) and the absolute label centre. */
 export interface TransitionLayout {
   readonly route?: readonly (readonly [number, number])[];
   readonly label?: readonly [number, number];

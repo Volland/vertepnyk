@@ -21,3 +21,6 @@
  *   function uniqueId(model: ChartModel, base: string): string;
  */
 export * from "./model.js";
+export { ChartDocument, newChart, detectFormat, applyPatches } from "./document.js";
+export { uniqueId } from "./ids.js";
+export { VL_NS } from "./backend.js";

@@ -49,3 +49,11 @@ VS Code webviews, Obsidian (Electron renderer) and Electron all render HTML in C
 VS Code selects a custom editor by filename pattern, never by file content, and Obsidian registers views by extension.
 
 - constrains:: [[decisions#Custom editors for scxml and vt.yaml files]] {strength: must, source: "VS Code contributes.customEditors selector; Obsidian registerExtensions"}
+
+## vertep WASM gaps worked around in sim
+
+Found while building the simulator: `@vertep/web` has no fork call, `can` is false before the first journal entry, raised internal events and done data are not reported, an ill-typed payload at `send` is not rejected, and `onTransition` skips steps that took no transition.
+
+- constrains:: [[decisions#Simulation v1 with time travel]] {strength: must, source: "vertep bindings/js/packages/web, found 2026-11-13"}
+
+Sim emulates them: a fork replays the run's events into a fresh actor, `can` at the initial configuration uses a probe actor, internal events are inferred from the transitions taken, and typed payloads are checked first against a probe chart. Each emulation can be removed when vertep exposes the feature.

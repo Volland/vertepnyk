@@ -1,0 +1,11 @@
+{
+  "name": "@vertepnyk/host-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The contract between the vertepnyk designer and the program that hosts it",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc -p . --noEmit", "build": "tsc -p ." },
+  "dependencies": { "@vertepnyk/core": "workspace:*" }
+}
