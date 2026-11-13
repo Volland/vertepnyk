@@ -1,0 +1,51 @@
+---
+type: Constraint
+source: "vertep (sibling repository) and the host platforms; each section names its origin"
+---
+# Constraints
+
+Rules vertepnyk did not choose: what vertep's semantics, IR and API impose, and what the host platforms allow.
+
+## vertep semantics are the reference
+
+Charts run in production on vertep, which implements the W3C SCXML interpretation algorithm; a simulation that differs from vertep would mislead its user.
+
+- constrains:: [[decisions#vertep WASM is the only interpreter]] {strength: must, source: "vertep decisions: SCXML semantics are normative"}
+
+## vertep WASM API surface
+
+`@vertep/web` offers register (with violations), send, getSnapshot, can, journal, asOf, onTransition and memory storage; it has no controllable clock and no context setter, and is not yet on npm.
+
+- constrains:: [[decisions#Simulation v1 with time travel]] {strength: must, source: "vertep bindings/js/packages/web/src/client.ts"}
+- constrains:: [[decisions#Depend on published vertep packages]] {strength: must, source: "vertep components: vertep-wasm, open: publishing"}
+
+## vertep's IR drops formatting
+
+vertep's readers lower SCXML and YAML to an IR whose writers emit canonical text, losing comments, attribute order and indentation.
+
+- constrains:: [[decisions#The text file is the source of truth]] {strength: must, source: "vertep-scxml writer.rs, vertep-yaml lib.rs write"}
+
+## Chart version is the hash of the IR
+
+vertep names a chart version by the hash of its canonical IR, and foreign-namespace markup is kept in the IR as extension nodes, so anything that reaches the IR changes the version.
+
+- constrains:: [[decisions#Layout lives in vertep's reserved layout namespace]] {strength: must, source: "vertep-scxml loss.rs ForeignExtension; vertep chart-versioning"}
+
+## vertep's readers keep or reject unknown markup
+
+vertep's YAML reader rejects unknown keys, and its SCXML reader keeps foreign attributes as content, so layout needs a namespace vertep itself treats as formatting.
+
+- constrains:: [[decisions#Layout lives in vertep's reserved layout namespace]] {strength: must, source: "vertep-yaml read.rs unknown key"}
+
+## Hosts render in web views
+
+VS Code webviews, Obsidian (Electron renderer) and Electron all render HTML in Chromium, under each host's content security policy, so one web UI serves all three.
+
+- constrains:: [[decisions#SolidJS and SVG render the canvas]] {strength: should, source: "VS Code Webview API, Obsidian plugin API, Electron"}
+- constrains:: [[decisions#Hosts are thin adapters over one core]] {strength: should, source: "VS Code Webview API, Obsidian plugin API, Electron"}
+
+## VS Code binds custom editors by file pattern
+
+VS Code selects a custom editor by filename pattern, never by file content, and Obsidian registers views by extension.
+
+- constrains:: [[decisions#Custom editors for scxml and vt.yaml files]] {strength: must, source: "VS Code contributes.customEditors selector; Obsidian registerExtensions"}
