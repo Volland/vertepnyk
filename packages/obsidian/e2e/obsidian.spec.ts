@@ -1,5 +1,5 @@
 /**
- * The built plugin (dist/main.js and dist/assets) in Chromium against the mock `obsidian`
+ * The built plugin (dist/main.js, with its assets compiled in) in Chromium against the mock `obsidian`
  * module: code blocks and embeds render, and the simulation runs on vertep's worker and
  * WebAssembly loaded from Blob URLs, with no network but this local server.
  */

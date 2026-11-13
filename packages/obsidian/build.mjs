@@ -1,16 +1,18 @@
 /**
  * Assembles the plugin into dist/, ready to drop into <vault>/.obsidian/plugins/vertepnyk/:
  *
- *   main.js              the plugin (CJS; obsidian, electron, @codemirror/*, @lezer/* external)
- *   manifest.json, versions.json, styles.css
- *   assets/layout-worker.js   packages/layout/src/worker.ts, self-contained (elkjs inlined)
- *   assets/vertep-worker.js   @vertep/web's worker, self-contained, WebAssembly URLs patched
- *   assets/{core,journal,ecma}/vertep_wasm.js, vertep_wasm_bg.wasm
+ *   main.js              the plugin (CJS; obsidian, electron, @codemirror/*, @lezer/* external),
+ *                        with its assets compiled in, gzipped (see src/embedded.ts):
+ *                          layout-worker.js   packages/layout/src/worker.ts, self-contained (elkjs inlined)
+ *                          vertep-worker.js   @vertep/web's worker, self-contained, WebAssembly URLs patched
+ *                          {core,journal,ecma}/vertep_wasm.js, vertep_wasm_bg.wasm
+ *   manifest.json, versions.json, styles.css (manifest.json and versions.json also at the repository root)
  *
  * Solid's JSX is compiled with babel-preset-solid (found through vite-plugin-solid, which the
  * workspace already depends on) after esbuild strips the types.
  */
-import { copyFileSync, existsSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, statSync } from "node:fs";
+import { gzipSync } from "node:zlib";
 import { builtinModules, createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -48,22 +50,6 @@ mkdirSync(join(dist, "assets"), { recursive: true });
 
 const common = { bundle: true, target: "es2022", logLevel: "info", legalComments: "none" };
 
-// ---- the plugin ---------------------------------------------------------------------------
-await build({
-  ...common,
-  entryPoints: [join(here, "src/main.ts")],
-  outfile: join(dist, "main.js"),
-  format: "cjs",
-  platform: "browser",
-  conditions: ["solid", "browser", "import", "module"],
-  external: ["obsidian", "electron", "@codemirror/*", "@lezer/*", ...builtinModules, ...builtinModules.map((m) => `node:${m}`), "@vertep/dm-ecma"],
-  define: { "process.env.NODE_ENV": '"production"', "import.meta.url": '"file:///vertepnyk/"' },
-  plugins: [solid],
-  sourcemap: false,
-  minify: true,
-  mainFields: ["module", "main"],
-});
-
 // ---- the layout worker ----------------------------------------------------------------------
 await build({
   ...common,
@@ -96,14 +82,18 @@ await build({
           const src = readFileSync(args.path, "utf8");
           const out = src
             .replace(/new URL\(`\.\.\/wasm\/\$\{kind\}\/vertep_wasm\.js`, import\.meta\.url\)\.href/, () => (patched++, "globalThis.__VERTEP_BUILDS[kind].glue"))
-            .replace(/new URL\(`\.\.\/wasm\/\$\{kind\}\/vertep_wasm_bg\.wasm`, import\.meta\.url\)\.href/, () => (patched++, "globalThis.__VERTEP_BUILDS[kind].wasm"));
+            .replace(/new URL\(`\.\.\/wasm\/\$\{kind\}\/vertep_wasm_bg\.wasm`, import\.meta\.url\)\.href/, () => (patched++, "globalThis.__VERTEP_BUILDS[kind].wasm"))
+            // Obsidian runs Web Workers with Node integration, so `process.versions.node` is set and
+            // there is no `window`: the worker would take its Node branch and import
+            // node:worker_threads, which fails in a Blob worker. Here it is always a Web Worker.
+            .replace(/const isNode = typeof process !== "undefined" && !!process\.versions\?\.node && typeof globalThis\.window === "undefined";/, () => (patched++, "const isNode = false;"));
           return { contents: out, loader: "js", resolveDir: dirname(args.path) };
         });
       },
     },
   ],
 });
-if (patched !== 2) throw new Error(`vertep's worker changed: expected to patch 2 WebAssembly lookups, patched ${patched}`);
+if (patched !== 3) throw new Error(`vertep's worker changed: expected 3 patches (two WebAssembly lookups and the Node check), made ${patched}`);
 
 // ---- WebAssembly builds and static files ----------------------------------------------------
 const copy = (from, to) => {
@@ -117,5 +107,38 @@ for (const [dir, root, sub] of [["core", vertepWeb, "wasm/core"], ["journal", ve
 for (const f of ["manifest.json", "versions.json"]) copy(join(here, "static", f), join(dist, f));
 copy(join(here, "styles.css"), join(dist, "styles.css"));
 copy(join(here, "../../LICENSE-MIT"), join(dist, "LICENSE-MIT"));
-writeFileSync(join(dist, "assets/README.txt"), "WebAssembly builds and workers of the vertepnyk plugin. Do not remove: the plugin loads them from here without network access.\n");
-console.log("vertepnyk-obsidian: built", dist);
+// ---- the assets, compiled into main.js -------------------------------------------------------
+// Obsidian's community directory installs only main.js, manifest.json and styles.css, so every
+// file of assets/ goes into main.js, gzipped and base64-encoded (src/embedded.ts reads them).
+const embedded = {};
+const walk = (dir, prefix = "") => {
+  for (const name of readdirSync(dir)) {
+    const full = join(dir, name);
+    const rel = prefix ? `${prefix}/${name}` : name;
+    if (statSync(full).isDirectory()) walk(full, rel);
+    else embedded[rel] = gzipSync(readFileSync(full), { level: 9 }).toString("base64");
+  }
+};
+walk(join(dist, "assets"));
+rmSync(join(dist, "assets"), { recursive: true, force: true });
+
+// ---- the plugin ---------------------------------------------------------------------------
+await build({
+  ...common,
+  entryPoints: [join(here, "src/main.ts")],
+  outfile: join(dist, "main.js"),
+  format: "cjs",
+  platform: "browser",
+  conditions: ["solid", "browser", "import", "module"],
+  external: ["obsidian", "electron", "@codemirror/*", "@lezer/*", ...builtinModules, ...builtinModules.map((m) => `node:${m}`), "@vertep/dm-ecma"],
+  define: { "process.env.NODE_ENV": '"production"', "import.meta.url": '"file:///vertepnyk/"', __VERTEPNYK_EMBEDDED__: JSON.stringify(embedded) },
+  plugins: [solid],
+  sourcemap: false,
+  minify: true,
+  mainFields: ["module", "main"],
+});
+
+// The repository root carries the manifest Obsidian's directory reads.
+copy(join(here, "static/manifest.json"), join(here, "../../manifest.json"));
+copy(join(here, "static/versions.json"), join(here, "../../versions.json"));
+console.log("vertepnyk-obsidian: built", dist, `(${Object.keys(embedded).length} assets in main.js)`);

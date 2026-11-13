@@ -19,11 +19,11 @@ Website: [volland.github.io/vertep/vertepnyk.html](https://volland.github.io/ver
 
 ## Install
 
-Version 0.1.0 is a preview, released on [GitHub](https://github.com/Volland/vertepnyk/releases/tag/v0.1.0). It is not listed on the VS Code Marketplace, Open VSX or Obsidian's community plugins yet.
+Version 0.1.0 is a preview.
 
-- **VS Code** (and Cursor, VSCodium): download `vertepnyk-vscode-0.1.0.vsix`, then `code --install-extension vertepnyk-vscode-0.1.0.vsix` or **Extensions: Install from VSIX…**. Open a chart with **Open With… > Vertepnyk Designer**.
-- **Obsidian**: unpack `vertepnyk-obsidian-0.1.0.zip` into `<vault>/.obsidian/plugins/` (giving `.obsidian/plugins/vertepnyk/`) and enable it under **Community plugins**.
-- **macOS app**: `Vertepnyk-0.1.0-universal.dmg` (not notarized yet: open it the first time with right-click > **Open**). Windows and Linux: build from source.
+- **VS Code**: install **Vertepnyk** from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=pavlyshyn.vertepnyk-vscode) (`code --install-extension pavlyshyn.vertepnyk-vscode`). For Cursor, VSCodium and other VS Code builds it is on [Open VSX](https://open-vsx.org/extension/pavlyshyn/vertepnyk-vscode). Open a chart with **Open With… > Vertepnyk Designer**.
+- **Obsidian** (desktop): the listing in Obsidian's community directory is pending. Until then, download `main.js`, `manifest.json` and `styles.css` from the [0.1.0 release](https://github.com/Volland/vertepnyk/releases/tag/0.1.0) into `<vault>/.obsidian/plugins/vertepnyk/` (or unpack `vertepnyk-obsidian-0.1.0.zip` into `.obsidian/plugins/`), then enable it under **Community plugins**. The plugin is self-contained: those three files are all it needs.
+- **macOS app**: `Vertepnyk-0.1.0-universal.dmg` from the [release](https://github.com/Volland/vertepnyk/releases/tag/0.1.0) (not notarized yet: open it the first time with right-click > **Open**). Windows and Linux: build from source.
 
 ## Build from source
 
@@ -43,7 +43,7 @@ M1 to M5 are implemented: all 71 requirements are implemented and verified. Know
 
 - Vertep 0.1.3 on crates.io does not yet treat the `vl:` layout namespace as formatting, so its `vt hash` changes when layout changes; the engine bundled here already ignores layout, and the next vertep release will too.
 - Automatic layout is written into the file when it first opens, so a fresh chart shows as modified, and in VS Code that undo takes two presses.
-- The Obsidian plugin is verified in a simulated host, not yet in Obsidian itself; `.vt.yaml` cannot be bound by extension in Obsidian or Electron.
+- `.vt.yaml` cannot be bound by extension in Obsidian or Electron. The Obsidian plugin is checked in real Obsidian 1.14 with `pnpm --filter vertepnyk-obsidian run test:real`.
 
 - Specs: [`openspec/changes/designer-core`](openspec/changes/designer-core) and [`openspec/changes/editor-hosts`](openspec/changes/editor-hosts)
 - Design intent as a typed graph: [`tg.md/`](tg.md) (`tg check`, `tg cypher`)
@@ -53,4 +53,4 @@ Stack: TypeScript, SolidJS, SVG, elkjs, pnpm workspaces, Vite, Vitest, Playwrigh
 
 ## License
 
-Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or [MIT license](LICENSE-MIT) at your option.
+Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or [MIT license](LICENSE-MIT) at your option (see [LICENSE](LICENSE)).

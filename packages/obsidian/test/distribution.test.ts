@@ -1,7 +1,9 @@
 import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
+import { gzipSync } from "node:zlib";
 import { EngineAssets } from "../src/assets.js";
+import { EmbeddedAssetAdapter, withEmbeddedAssets } from "../src/embedded.js";
 import { MANIFEST, loadPlugin } from "./helpers.js";
 
 const pkg = [resolve(process.cwd(), "packages/obsidian"), process.cwd()].find((d) => { try { readFileSync(join(d, "static/manifest.json")); return true; } catch { return false; } })!;
@@ -77,4 +79,32 @@ describe("engine assets", () => {
     warn.mockRestore();
     expect(plugin).toBeDefined();
   });
+
+  // @tg: verifies:: [[openspec:host-bridge#WebAssembly loads in every host#Offline start]] {level: unit}
+  it("serves assets compiled into main.js, and reads anything else from the plugin folder", async () => {
+    const fetch = vi.fn(() => Promise.reject(new Error("network")));
+    vi.stubGlobal("fetch", fetch);
+    const wasm = new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 42]);
+    const table = { "core/vertep_wasm_bg.wasm": gzipSync(wasm).toString("base64") };
+    const fromFolder: string[] = [];
+    const folder = {
+      readBinary: async (p: string) => (fromFolder.push(p), new TextEncoder().encode(`file ${p}`).buffer as ArrayBuffer),
+      getResourcePath: (p: string) => `app://x/${p}`,
+    };
+    const adapter = new EmbeddedAssetAdapter(table, folder);
+    const got = new Uint8Array(await adapter.readBinary(".obsidian/plugins/vertepnyk/assets/core/vertep_wasm_bg.wasm"));
+    expect([...got]).toEqual([...wasm]);
+    // each read is a fresh copy, so a transferred buffer never empties the cache
+    const again = await adapter.readBinary(".obsidian/plugins/vertepnyk/assets/core/vertep_wasm_bg.wasm");
+    expect(again.byteLength).toBe(wasm.length);
+    expect(fromFolder).toEqual([]);
+    await adapter.readBinary(".obsidian/plugins/vertepnyk/assets/vertep-worker.js");
+    expect(fromFolder).toEqual([".obsidian/plugins/vertepnyk/assets/vertep-worker.js"]);
+    expect(adapter.getResourcePath("x")).toBe("app://x/x");
+    // without a compiled table the vault adapter is used as it is
+    expect(withEmbeddedAssets(folder, undefined)).toBe(folder);
+    expect(fetch).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
 });
+

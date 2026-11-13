@@ -60,4 +60,6 @@ A virtual clock for delayed events, live context editing and recorded scenarios 
 
 M1 to M5 are implemented and every one of the 71 requirements is implemented and verified. Open: merging vertep `layout-namespace`, publishing `@vertep/web`, publishing the extensions, and the known limitations below.
 
-Known limitations: automatic layout is written into the file when it opens, so a fresh chart is modified, and in VS Code an undo takes two presses; the Obsidian plugin is unverified in real Obsidian; `.vt.yaml` cannot be bound by extension in Obsidian or Electron.
+Known limitations: automatic layout is written into the file when it opens, so a fresh chart is modified, and in VS Code an undo takes two presses; `.vt.yaml` cannot be bound by extension in Obsidian or Electron.
+
+On 2026-11-13 the Obsidian plugin was checked in real Obsidian 1.14.4 (`packages/obsidian/scripts/real-obsidian.mjs`): it loads, opens a chart in the designer, validates it to the same version IRI `vt hash` gives, simulates a step, and renders code blocks. That check found the worker's Node detection failing under Obsidian's Node-integrated workers. The extension is on the VS Code Marketplace and Open VSX as `pavlyshyn.vertepnyk-vscode`.

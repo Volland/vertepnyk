@@ -3,6 +3,7 @@ import { Notice, Plugin, TFile, TFolder, normalizePath, type WorkspaceLeaf } fro
 import { newChart, type Format } from "@vertepnyk/core";
 import type { ViewState } from "@vertepnyk/host-bridge";
 import { EngineAssets } from "./assets.js";
+import { withEmbeddedAssets } from "./embedded.js";
 import { registerCodeBlocks } from "./codeblock.js";
 import { embedPostProcessor, registerEmbedCreator } from "./embeds.js";
 import { DEFAULT_SETTINGS, VertepnykSettingTab, mergeSettings, type VertepnykSettings } from "./settings.js";
@@ -23,7 +24,7 @@ export default class VertepnykPlugin extends Plugin {
     this.theme = new ThemeSource();
     this.registerEvent(this.app.workspace.on("css-change", () => this.theme.refresh()));
     const dir = this.manifest.dir ?? normalizePath(`${this.app.vault.configDir}/plugins/${this.manifest.id}`);
-    this.assets = new EngineAssets(this.app.vault.adapter, dir);
+    this.assets = new EngineAssets(withEmbeddedAssets(this.app.vault.adapter), dir);
 
     this.registerView(VIEW_TYPE, (leaf: WorkspaceLeaf) => new ChartView(leaf, this));
     // Obsidian binds a view to the last dot-segment of a file name, so `vt.yaml` cannot be

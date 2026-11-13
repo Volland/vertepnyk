@@ -100,3 +100,13 @@ Rejected: a `link:` to the sibling checkout (CI must build vertep), vendored WAS
 The project is named vertepnyk (вертепник, the puppeteer who builds the vertep box and runs the show), lives at github.com/Volland/vertepnyk and is public under MIT OR Apache-2.0, like vertep.
 
 Rejected names: rizba (carving), shopka (the vertep box), lialkar (the puppet maker).
+
+## Obsidian assets are compiled into main.js
+
+The Obsidian build gzips vertep's worker and WebAssembly builds and the layout worker into `main.js` (about 11 MB), so the plugin installs from the community directory as `main.js`, `manifest.json` and `styles.css` alone.
+
+- motivated_by:: [[constraints#Obsidian installs only three files]] {weight: primary, since: "2026-11-13"}
+- motivated_by:: [[decisions#vertep WASM is the only interpreter]] {weight: secondary, note: "the engine must ship with the plugin, offline"}
+
+`EmbeddedAssetAdapter` serves `assets/<rel>` from the table and falls back to the plugin folder. Rejected: downloading the assets on first run (network access and a second trust path), and a manual zip only (not installable from the directory). The repository root carries `manifest.json` and `versions.json`, which the build copies from `packages/obsidian/static/`.
+

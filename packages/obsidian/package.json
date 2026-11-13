@@ -9,7 +9,8 @@
     "typecheck": "tsc -p . --noEmit",
     "build": "node build.mjs",
     "test": "vitest run --config vitest.config.ts",
-    "test:e2e": "playwright test -c playwright.config.ts"
+    "test:e2e": "playwright test -c playwright.config.ts",
+    "test:real": "node build.mjs && node scripts/real-obsidian.mjs"
   },
   "devDependencies": {
     "obsidian": "latest",

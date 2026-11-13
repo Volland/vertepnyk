@@ -66,4 +66,13 @@ The Obsidian community installer downloads `main.js`, `manifest.json` and `style
 
 - constrains:: [[decisions#Hosts ship web shell, VS Code, Obsidian, Electron]] {strength: must, source: "Obsidian plugin guidelines and community installer"}
 
-Open: embed the assets in `main.js`, ship a manual zip, or rely on BRAT. The plugin works from a manual install today.
+Resolved by [[decisions#Obsidian assets are compiled into main.js]].
+
+## Obsidian's Web Workers have Node integration
+
+Obsidian starts Web Workers with Node integration, so inside a worker `process.versions.node` is set and there is no `window`; code that sniffs for Node takes its Node branch there.
+
+- constrains:: [[decisions#Obsidian assets are compiled into main.js]] {strength: must, source: "Obsidian 1.14 desktop, observed 2026-11-13"}
+
+`@vertep/web`'s worker does exactly that and imports `node:worker_threads`, which fails in a Blob worker, so the engine never started and validation stayed at "checking". The plugin build replaces that check in the bundled worker.
+
