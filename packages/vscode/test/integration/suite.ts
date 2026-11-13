@@ -77,7 +77,7 @@ export async function run(): Promise<void> {
     assert.fail(`could not apply the edit ${from} -> ${to}`);
   };
 
-  const ext = vscode.extensions.getExtension("volland.vertepnyk-vscode");
+  const ext = vscode.extensions.getExtension("pavlyshyn.vertepnyk-vscode");
   assert.ok(ext, "extension is installed from the development path");
   await ext.activate();
 
