@@ -17,6 +17,8 @@ The host-independent chart model: SCXML and YAML syntax trees, the semantic view
 - realizes:: [[decisions#Layout lives in vertep's reserved layout namespace]]
 - scheduled_in:: [[roadmap#M1 Designer core]]
 
+Implemented 2026-11-13: a lossless XML tree and the `yaml` Document API behind one `ChartDocument`; every command becomes minimal text patches (untouched lines stay byte-identical), with undo that restores the exact text. Round-trips every fixture and the W3C suite documents, and its edits are accepted by `vt validate`.
+
 ## layout
 
 Automatic layout of nested and parallel charts with elkjs in a Web Worker, incremental and cancellable.
@@ -36,6 +38,8 @@ The SolidJS and SVG canvas: drawing every state kind, structural editing, naviga
 - realizes:: [[decisions#SolidJS and SVG render the canvas]]
 - scheduled_in:: [[roadmap#M1 Designer core]]
 
+Implemented 2026-11-13: `<Canvas>` with per-element signals, viewport culling, theming through `ThemeTokens`, keyboard navigation and ARIA labels; drags commit as one undo step. The 60 fps budget is measured in the web shell end-to-end test.
+
 ## inspector
 
 Structured forms for transitions, the datamodel and executable content.
@@ -45,6 +49,8 @@ Structured forms for transitions, the datamodel and executable content.
 - uses:: [[components#sim]] {kind: required, note: "expression checking"}
 - realizes:: [[decisions#Structure on the canvas, content in the inspector]]
 - scheduled_in:: [[roadmap#M1 Designer core]]
+
+Implemented 2026-11-13: forms for states, transitions, the datamodel and executable content, with debounced expression checks and opaque items kept verbatim. Reordering is by buttons only.
 
 ## sim
 
@@ -59,6 +65,8 @@ The adapter over vertep's WebAssembly interpreter: validation in a scratch syste
 - realizes:: [[decisions#Simulation v1 with time travel]]
 - scheduled_in:: [[roadmap#M2 Simulation and web shell]]
 
+Implemented 2026-11-13: `Validator` (scratch system per datamodel build, stale-result suppression) and `Simulator` (runs, time travel, forks, replay, typed payload probe). Emulated where vertep lacks an API, see [[constraints#vertep WASM gaps worked around in sim]].
+
 ## designer
 
 The composed designer UI (canvas, inspector, simulation panel, diagnostics) behind the host bridge interface; what every host mounts.
@@ -68,6 +76,8 @@ The composed designer UI (canvas, inspector, simulation panel, diagnostics) behi
 - uses:: [[components#sim]] {kind: required}
 - realizes:: [[decisions#Hosts are thin adapters over one core]]
 - scheduled_in:: [[roadmap#M2 Simulation and web shell]]
+
+The `DesignerController` (buffer sync, live validation, simulation) is implemented 2026-11-13; the composed UI follows.
 
 ## web-shell
 
@@ -84,6 +94,8 @@ The interface between the designer and its host: buffer, patches, theme, view st
 - provides:: [[capabilities#Host bridge]] {confidence: full}
 - realizes:: [[decisions#Hosts are thin adapters over one core]]
 - scheduled_in:: [[roadmap#M3 VS Code extension]]
+
+Implemented 2026-11-13: the `HostBridge` interface, theme tokens with light and dark defaults, `tokensFromCss` and an in-memory host for tests.
 
 ## vscode
 

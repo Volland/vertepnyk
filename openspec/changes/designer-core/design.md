@@ -65,4 +65,4 @@ New project; no migration. Version 0.x until all four hosts ship.
 
 ## Open Questions
 
-- Exact `vl:route` encoding (polyline points vs. bend hints): settled with the upstream layout-namespace change; it does not change the specs.
+None open. Settled during implementation: a transition's `vl:route` / YAML `route` is the full absolute polyline (start, bends, end) and `label` is the absolute centre of the label box; state coordinates are relative to the parent.
