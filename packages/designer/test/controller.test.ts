@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 import { afterEach, describe, expect, it } from "vitest";
 import { createMemoryHost, type MemoryHost } from "@vertepnyk/host-bridge";
-import { DesignerController } from "../src/index.js";
+import { DesignerController } from "../src/controller.js";
 
 const fixture = (n: string) => readFileSync(new URL(`../../../fixtures/${n}`, import.meta.url), "utf8");
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
