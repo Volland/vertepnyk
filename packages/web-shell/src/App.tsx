@@ -4,7 +4,7 @@
  */
 import { For, Show, createSignal, onCleanup, type JSX } from "solid-js";
 import { newChart, type Format } from "@vertepnyk/core";
-import { createInProcessLayout } from "@vertepnyk/layout";
+import { createLayoutWorker } from "@vertepnyk/layout";
 import { Designer, generateChart, type DesignerHandle, type DesignerUiOptions } from "@vertepnyk/designer";
 import { themeVars } from "@vertepnyk/designer";
 import { TextPane } from "./TextPane.jsx";
@@ -102,11 +102,9 @@ export function App(): JSX.Element {
         workerUrl: abs("web/dist/worker.js"),
         ecmascriptBuild: { glue: abs("ecma/wasm/vertep_wasm.js"), wasm: abs("ecma/wasm/vertep_wasm_bg.wasm"), datamodels: ["ecmascript"], journal: true },
       },
-      // a benchmark places states provisionally instead of waiting for ELK. Layout runs on the
-      // page thread: elkjs's bundled build cannot start inside a module worker (its fake-worker
-      // module installs itself as the worker's message handler), so `createLayoutWorker()` fails
-      // in browsers.
-      layoutClient: benchMode ? null : createInProcessLayout(),
+      // a benchmark places states provisionally instead of waiting for ELK; otherwise layout
+      // runs in the layout Web Worker so a busy layout never blocks the canvas.
+      layoutClient: benchMode ? null : createLayoutWorker(),
     };
   };
 

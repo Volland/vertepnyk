@@ -30,6 +30,22 @@ test.describe("web shell", () => {
     await expect(state(page, "cart")).toHaveAttribute("data-active", "false");
   });
 
+  // @tg: verifies:: [[openspec:chart-layout#Layout does not block editing#Large chart layout]] {level: e2e}
+  test("lays out an unplaced chart in a Web Worker and the canvas stays responsive", async ({ page }) => {
+    const workers: string[] = [];
+    page.on("worker", (w) => workers.push(w.url()));
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    await page.goto("/");
+    await page.getByTestId("file-name").waitFor();
+    await ready(page);
+    // states are drawn provisionally at first; once the worker answers none is provisional
+    await expect(page.locator("[data-state-id]").first()).toBeVisible();
+    await expect(page.locator('[data-state-id][data-provisional="true"]')).toHaveCount(0, { timeout: 30_000 });
+    await expect.poll(() => workers.some((u) => /layout|worker/i.test(u))).toBe(true);
+    expect(errors.filter((m) => /Worker/.test(m))).toEqual([]);
+  });
+
   // @tg: verifies:: [[openspec:web-shell#Side-by-side text#Type in the text]] {level: e2e}
   test("a state typed in the text pane appears on the canvas, and visual edits reach the text", async ({ page }) => {
     await page.goto("/");

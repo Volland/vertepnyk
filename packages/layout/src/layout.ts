@@ -7,7 +7,7 @@
  * When existing layout entries must be kept, ELK's result is used only for the new parts
  * and a post-pass places new states into free space around the fixed ones.
  */
-import ELK from "elkjs/lib/elk.bundled.js";
+import ElkApiClass from "elkjs/lib/elk-api.js";
 import type { ElkExtendedEdge, ElkLabel, ElkNode, ELK as ElkApi } from "elkjs/lib/elk-api.js";
 import type { ChartModel, Command, StateKind, StateLayout, TransitionLayout } from "@vertepnyk/core";
 
@@ -122,11 +122,45 @@ interface Rect {
 
 type Pt = readonly [number, number];
 
-let elkInstance: ElkApi | undefined;
-function elk(): ElkApi {
-  // The bundled build runs ELK in the calling thread (its "fake worker"): this is what the
-  // layout Web Worker wants, and what Node tests use.
-  elkInstance ??= new ELK();
+/** elkjs's in-thread engine: the `Worker` export of its worker build (a "fake worker"). */
+type FakeWorkerCtor = new (url?: string) => unknown;
+
+/**
+ * Loads elkjs's worker build and returns its in-thread engine.
+ *
+ * Inside a Web Worker that build does not export: it sees `document` undefined and `self`
+ * defined, takes it for ELK's own worker script and installs ELK's message handler instead.
+ * A stand-in `document` while it loads makes it export the engine, and is removed again.
+ * (`elk.bundled.js` wires the same engine with a CommonJS `require` that bundlers break.)
+ */
+async function loadFakeWorker(): Promise<FakeWorkerCtor> {
+  const g = globalThis as { document?: unknown; self?: unknown };
+  const standIn = g.document === undefined && g.self !== undefined;
+  if (standIn) g.document = {};
+  try {
+    const m = (await import("elkjs/lib/elk-worker.min.js")) as unknown as {
+      Worker?: FakeWorkerCtor;
+      default?: FakeWorkerCtor | { Worker?: FakeWorkerCtor };
+    };
+    const d = m.default;
+    const ctor = m.Worker ?? (typeof d === "function" ? d : d?.Worker);
+    if (!ctor) throw new Error("elkjs: the in-thread worker build exports no Worker");
+    return ctor;
+  } finally {
+    if (standIn) delete g.document;
+  }
+}
+
+let elkInstance: Promise<ElkApi> | undefined;
+function elk(): Promise<ElkApi> {
+  // ELK runs in the calling thread through its fake worker: in the layout Web Worker that is
+  // the worker's thread, in Node tests the test thread.
+  elkInstance ??= loadFakeWorker().then(
+    (Fake) =>
+      new (ElkApiClass as unknown as new (o: { workerFactory: (url?: string) => unknown }) => ElkApi)({
+        workerFactory: (url) => new Fake(url),
+      }),
+  );
   return elkInstance;
 }
 
@@ -320,7 +354,7 @@ export async function computeLayout(model: LayoutModel, opts: LayoutOptions = {}
   }
 
   checkAbort(opts.signal);
-  const laid = await elk().layout(root);
+  const laid = await (await elk()).layout(root);
   checkAbort(opts.signal);
 
   // --- Read ELK result --------------------------------------------------------------------
