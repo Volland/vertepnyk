@@ -1,3 +1,4 @@
+// @tg: implements:: [[openspec:electron-app#Desktop distribution]] {note: "build; electron-builder targets are in package.json, tags build them through .github/workflows/release-electron.yml"}
 // Builds the main process and the preload with esbuild and the renderer with Vite into dist/.
 import { build } from "esbuild";
 import { build as vite } from "vite";

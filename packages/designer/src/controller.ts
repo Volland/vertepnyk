@@ -53,6 +53,7 @@ export function transitionIndexFor(model: ChartModel | null): TransitionIndex {
 }
 
 // @tg: implements:: [[openspec:host-bridge#Hosts own the buffer]]
+// @tg: implements:: [[openspec:host-bridge#Same behaviour in every host]] {note: "validation and simulation run in this one controller for every host"}
 // @tg: implements:: [[openspec:chart-validation#Continuous validation]] {confidence: partial, note: "wired here; the validator is in sim"}
 export class DesignerController {
   readonly host: HostBridge;

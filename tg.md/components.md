@@ -79,6 +79,8 @@ The composed designer UI (canvas, inspector, simulation panel, diagnostics) behi
 
 The `DesignerController` (buffer sync, live validation, simulation) is implemented 2026-11-13; the composed UI follows.
 
+The composed UI is implemented 2026-11-13: toolbar, canvas and an Inspector, Simulation and Problems panel; 1,000 states pan at a 16.7 ms median frame in Chromium.
+
 ## web-shell
 
 The Vite browser page hosting the designer with a two-way text pane and an example gallery; also the Electron renderer.
@@ -86,6 +88,8 @@ The Vite browser page hosting the designer with a two-way text pane and an examp
 - provides:: [[capabilities#Web shell]] {confidence: full}
 - uses:: [[components#designer]] {kind: required}
 - scheduled_in:: [[roadmap#M2 Simulation and web shell]]
+
+Implemented 2026-11-13: CodeMirror text pane in two-way sync, File System Access with a download fallback, an example gallery and eight Playwright tests, with layout in a Web Worker.
 
 ## host-bridge
 
@@ -107,6 +111,8 @@ The VS Code extension: CustomTextEditor for `*.scxml` and `*.vt.yaml`, commands 
 - realizes:: [[decisions#Custom editors for scxml and vt.yaml files]]
 - scheduled_in:: [[roadmap#M3 VS Code extension]]
 
+Implemented 2026-11-13 and tested in real VS Code 1.146 (nine integration tests). Webview workers are built from fetched text because blob and cross-origin workers cannot load resources there. Packaged as a `.vsix`; not published.
+
 ## obsidian
 
 The Obsidian plugin: chart file view, code-block charts and embeds.
@@ -117,6 +123,8 @@ The Obsidian plugin: chart file view, code-block charts and embeds.
 - realizes:: [[decisions#Custom editors for scxml and vt.yaml files]]
 - scheduled_in:: [[roadmap#M4 Obsidian plugin]]
 
+Implemented 2026-11-13: file view, `scxml` and `vertep` code blocks, embeds and modal write-back with mismatch refusal. Tested against a mock Obsidian and in Chromium only; real Obsidian is unverified.
+
 ## electron
 
 The standalone desktop app: main process for native files and windows, the web shell as renderer.
@@ -126,6 +134,8 @@ The standalone desktop app: main process for native files and windows, the web s
 - uses:: [[components#host-bridge]] {kind: required}
 - realizes:: [[decisions#Hosts ship web shell, VS Code, Obsidian, Electron]]
 - scheduled_in:: [[roadmap#M5 Electron app]]
+
+Implemented 2026-11-13: sandboxed windows on an `app://` scheme, native files, watching, 27 unit and 7 Playwright-Electron tests, unpacked macOS packaging. Other platforms are configured, not built locally.
 
 ## vertep-web
 

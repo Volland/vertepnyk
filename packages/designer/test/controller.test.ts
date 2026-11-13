@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { readFileSync } from "node:fs";
 import { afterEach, describe, expect, it } from "vitest";
+import { newChart } from "@vertepnyk/core";
 import { createMemoryHost, type MemoryHost } from "@vertepnyk/host-bridge";
 import { DesignerController } from "../src/controller.js";
 
@@ -31,6 +32,17 @@ function open(name = "order.scxml"): { host: MemoryHost; ctl: DesignerController
 }
 
 describe("designer controller on a host", () => {
+  // @tg: verifies:: [[openspec:chart-document#New chart#New SCXML chart validates]] {level: integration}
+  it.each([
+    ["scxml", "new.scxml"],
+    ["yaml", "new.vt.yaml"],
+  ] as const)("a new %s chart validates on vertep without violations", async (format, fileName) => {
+    const host = createMemoryHost({ fileName, format, text: newChart(format, "fresh") });
+    ctl = new DesignerController(host, { validationDelayMs: 20 });
+    await until(() => ctl!.state.validation.status !== "pending");
+    expect(ctl.state.validation).toMatchObject({ status: "valid" });
+  });
+
   // @tg: verifies:: [[openspec:host-bridge#Hosts own the buffer#Dirty state after a visual edit]] {level: integration}
   it("sends a visual edit to the host buffer, which is then modified", async () => {
     const { host, ctl } = open();

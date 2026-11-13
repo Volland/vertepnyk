@@ -59,3 +59,11 @@ VS Code selects a custom editor by filename pattern, never by file content, and 
 - constrains:: [[decisions#Simulation v1 with time travel]] {strength: must, source: "vertep bindings/js/packages/web, found 2026-11-13"}
 
 Sim emulates them: a fork replays the run's events into a fresh actor, `can` at the initial configuration uses a probe actor, internal events are inferred from the transitions taken, and typed payloads are checked first against a probe chart. Each emulation can be removed when vertep exposes the feature.
+
+## Obsidian installs only three files
+
+The Obsidian community installer downloads `main.js`, `manifest.json` and `styles.css` from a release, but the plugin needs about 20 MB of WebAssembly and worker files beside them.
+
+- constrains:: [[decisions#Hosts ship web shell, VS Code, Obsidian, Electron]] {strength: must, source: "Obsidian plugin guidelines and community installer"}
+
+Open: embed the assets in `main.js`, ship a manual zip, or rely on BRAT. The plugin works from a manual install today.

@@ -857,6 +857,7 @@ function removeLayoutEntry(s: Session, section: "states" | "transitions", key: s
 }
 
 /** Set layout entries in one section, creating `layout`/section mappings as needed. */
+// @tg: implements:: [[openspec:chart-layout#Layout never changes the chart hash]] {note: "layout is written only into the top-level layout block, which vertep treats as formatting"}
 function setLayoutEntries(s: Session, section: "states" | "transitions", entries: readonly [string, YV][]): void {
   if (entries.length === 0) return;
   let rest = entries;

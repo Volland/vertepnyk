@@ -708,6 +708,7 @@ function updateData(s: Session, cmd: Extract<Command, { type: "updateData" }>): 
   s.commit(setAttrs(el, changes));
 }
 
+// @tg: implements:: [[openspec:chart-layout#Layout never changes the chart hash]] {note: "layout is written only as vl: attributes, which vertep treats as formatting"}
 function setLayout(s: Session, cmd: Extract<Command, { type: "setLayout" }>): void {
   const p = s.parsed;
   const lp = vlPrefix(p);

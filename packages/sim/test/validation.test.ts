@@ -131,6 +131,8 @@ describe("chart validation on vertep", () => {
 
   // Moving a state writes `vl:x`/`vl:y` (design D3); vertep's layout namespace (milestone M0)
   // keeps them out of the version IRI.
+  // @tg: verifies:: [[openspec:chart-layout#Layout never changes the chart hash#Moving a box keeps the version]] {level: integration}
+  // @tg: verifies:: [[openspec:chart-validation#Content hash shown#Hash follows semantic edits only]] {level: integration}
   it("does not change the version IRI when a state moves", async () => {
     const v = open();
     const text = fixture("order.scxml").replace(
