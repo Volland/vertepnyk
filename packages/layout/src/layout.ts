@@ -7,6 +7,9 @@
  * When existing layout entries must be kept, ELK's result is used only for the new parts
  * and a post-pass places new states into free space around the fixed ones.
  */
+// The declaration of elkjs's worker build travels with this file, so every package that imports
+// the layout type-checks without listing it.
+/// <reference path="./elkjs.d.ts" />
 import ElkApiClass from "elkjs/lib/elk-api.js";
 import type { ElkExtendedEdge, ElkLabel, ElkNode, ELK as ElkApi } from "elkjs/lib/elk-api.js";
 import type { ChartModel, Command, StateKind, StateLayout, TransitionLayout } from "@vertepnyk/core";

@@ -1,0 +1,28 @@
+{
+  "name": "vertepnyk-obsidian",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vertepnyk for Obsidian: vertep statechart designer and simulator",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p . --noEmit",
+    "build": "node build.mjs",
+    "test": "vitest run --config vitest.config.ts",
+    "test:e2e": "playwright test -c playwright.config.ts"
+  },
+  "devDependencies": {
+    "obsidian": "latest",
+    "esbuild": "^0.25.0",
+    "@types/node": "^22.10.0"
+  },
+  "dependencies": {
+    "@vertepnyk/canvas": "workspace:*",
+    "@vertepnyk/core": "workspace:*",
+    "@vertepnyk/designer": "workspace:*",
+    "@vertepnyk/host-bridge": "workspace:*",
+    "@vertepnyk/sim": "workspace:*",
+    "@vertepnyk/layout": "workspace:*",
+    "solid-js": "^1.9.9"
+  }
+}

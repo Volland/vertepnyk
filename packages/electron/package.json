@@ -1,0 +1,62 @@
+{
+  "name": "vertepnyk-electron",
+  "productName": "Vertepnyk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vertepnyk desktop: standalone vertep statechart designer and simulator",
+  "author": "Volodymyr Pavlyshyn",
+  "homepage": "https://github.com/Volland/vertepnyk",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "main": "dist/main.cjs",
+  "scripts": {
+    "typecheck": "tsc -p . --noEmit",
+    "build": "node build.mjs",
+    "start": "node build.mjs && electron .",
+    "test:e2e": "node build.mjs && playwright test",
+    "pack": "node build.mjs && electron-builder --dir --publish never",
+    "dist": "node build.mjs && electron-builder --publish never"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.10.0",
+    "@vertepnyk/core": "workspace:*",
+    "@vertepnyk/designer": "workspace:*",
+    "@vertepnyk/host-bridge": "workspace:*",
+    "@vertepnyk/layout": "workspace:*",
+    "@vertepnyk/web-shell": "workspace:*",
+    "chokidar": "^4.0.3",
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.0",
+    "esbuild": "^0.25.0",
+    "solid-js": "^1.9.9"
+  },
+  "build": {
+    "appId": "io.github.volland.vertepnyk",
+    "productName": "Vertepnyk",
+    "copyright": "MIT OR Apache-2.0",
+    "directories": { "output": "release", "buildResources": "build" },
+    "files": ["dist/**", "package.json"],
+    "asar": true,
+    "fileAssociations": [
+      { "ext": "scxml", "name": "SCXML statechart", "description": "SCXML statechart", "mimeType": "application/scxml+xml", "role": "Editor", "isPackage": false },
+      { "ext": "yaml", "name": "vertep YAML statechart (*.vt.yaml)", "description": "vertep YAML statechart", "role": "Editor", "rank": "Alternate" },
+      { "ext": "yml", "name": "vertep YAML statechart (*.vt.yml)", "description": "vertep YAML statechart", "role": "Editor", "rank": "Alternate" }
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [{ "target": "dmg", "arch": ["universal"] }, { "target": "zip", "arch": ["universal"] }],
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "icon": "build/icon.icns"
+    },
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "build/icon.ico" },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Development",
+      "icon": "build/icon.png",
+      "mimeTypes": ["application/scxml+xml", "application/yaml"]
+    }
+  }
+}

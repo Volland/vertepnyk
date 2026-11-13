@@ -1,0 +1,71 @@
+name: Release desktop app
+
+# Builds the Electron app on macOS, Windows and Linux when a version tag is pushed and attaches
+# the installers to the GitHub release. Unsigned: no signing identity is configured.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            artifacts: |
+              vertepnyk/packages/electron/release/*.dmg
+              vertepnyk/packages/electron/release/*.zip
+          - os: windows-latest
+            artifacts: |
+              vertepnyk/packages/electron/release/*.exe
+          - os: ubuntu-latest
+            artifacts: |
+              vertepnyk/packages/electron/release/*.AppImage
+              vertepnyk/packages/electron/release/*.deb
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: vertepnyk
+      # Until @vertep/web is on npm the workspace links the sibling vertep checkout
+      # (see pnpm-workspace.yaml overrides); build its JavaScript and WebAssembly packages.
+      - uses: actions/checkout@v4
+        with:
+          repository: Volland/vertep
+          path: vertep
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: vertep
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - name: Build @vertep/web
+        working-directory: vertep/bindings/js
+        run: npm ci && npm run build
+      - name: Install
+        working-directory: vertepnyk
+        run: pnpm install --frozen-lockfile
+      - name: Build the app
+        working-directory: vertepnyk/packages/electron
+        run: node build.mjs
+      - name: Package
+        working-directory: vertepnyk/packages/electron
+        run: npx electron-builder --publish never
+      - name: Attach to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.artifacts }}

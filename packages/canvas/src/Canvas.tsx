@@ -223,6 +223,9 @@ export function Canvas(props: CanvasProps): JSX.Element {
   // Provisional layout: ask the layout client for states without entries.
   let inFlight = false;
   let lastKey = "";
+  // consecutive cancelled layouts: a client that cancels every request must not loop forever
+  let cancelledRuns = 0;
+  const MAX_CANCELLED_RUNS = 5;
   createEffect(() => {
     kick();
     const m = model();
@@ -241,6 +244,7 @@ export function Canvas(props: CanvasProps): JSX.Element {
     client.layout(m, { keepExisting: true }).then(
       (res) => {
         inFlight = false;
+        cancelledRuns = 0;
         if (props.doc.text !== text) {
           lastKey = "";
           setKick((k) => k + 1);
@@ -251,6 +255,7 @@ export function Canvas(props: CanvasProps): JSX.Element {
       (e: unknown) => {
         inFlight = false;
         if (e instanceof LayoutCancelledError) {
+          if (++cancelledRuns > MAX_CANCELLED_RUNS) return; // keep lastKey: no retry until the missing set changes
           lastKey = "";
           setKick((k) => k + 1);
         } else report(e);

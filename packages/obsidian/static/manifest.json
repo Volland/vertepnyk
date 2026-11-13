@@ -1,0 +1,9 @@
+{
+  "id": "vertepnyk",
+  "name": "Vertepnyk",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Design and simulate vertep statecharts: SCXML and YAML chart files, chart code blocks and embeds.",
+  "author": "Volodymyr Pavlyshyn",
+  "isDesktopOnly": true
+}

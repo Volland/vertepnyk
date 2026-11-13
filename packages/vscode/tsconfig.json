@@ -1,0 +1,5 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "noEmit": true, "types": ["node", "vscode"], "rootDir": "../..", "declaration": false },
+  "include": ["src", "test", "../layout/src/elkjs.d.ts"]
+}

@@ -1,0 +1,11 @@
+**
+!dist/extension.cjs
+!dist/webview.js
+!dist/layout-worker.js
+!dist/vertep-worker.js
+!dist/vertep/**
+!media/icon.png
+!README.md
+!LICENSE-MIT
+!LICENSE-APACHE
+!package.json

@@ -1,0 +1,98 @@
+{
+  "name": "vertepnyk-vscode",
+  "displayName": "Vertepnyk",
+  "description": "Visual designer and simulator for vertep SCXML and YAML statecharts",
+  "version": "0.1.0",
+  "publisher": "volland",
+  "license": "MIT OR Apache-2.0",
+  "icon": "media/icon.png",
+  "categories": ["Visualization", "Programming Languages", "Other"],
+  "keywords": ["scxml", "statechart", "state machine", "vertep", "designer", "simulator"],
+  "repository": { "type": "git", "url": "https://github.com/Volland/vertepnyk", "directory": "packages/vscode" },
+  "engines": { "vscode": "^1.90.0" },
+  "main": "./dist/extension.cjs",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "vertepnyk.designer",
+        "displayName": "Vertepnyk Designer",
+        "selector": [{ "filenamePattern": "*.scxml" }, { "filenamePattern": "*.vt.yaml" }, { "filenamePattern": "*.vt.yml" }],
+        "priority": "option"
+      }
+    ],
+    "configuration": {
+      "title": "Vertepnyk",
+      "properties": {
+        "vertepnyk.defaultEditor": {
+          "type": "string",
+          "enum": ["text", "designer"],
+          "enumDescriptions": ["Open chart files in the text editor; choose Open With to use the designer.", "Open chart files in the visual designer."],
+          "default": "text",
+          "markdownDescription": "Which editor opens `*.scxml` and `*.vt.yaml` files by default. Sets `workbench.editorAssociations` for those patterns."
+        },
+        "vertepnyk.retainContextWhenHidden": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Keep the designer (and a running simulation) alive while its tab is hidden. Uses more memory; takes effect after a window reload."
+        }
+      }
+    },
+    "commands": [
+      { "command": "vertepnyk.newScxml", "title": "New SCXML Chart", "category": "Vertepnyk", "icon": "$(add)" },
+      { "command": "vertepnyk.newYaml", "title": "New YAML Chart", "category": "Vertepnyk", "icon": "$(add)" },
+      { "command": "vertepnyk.openDesigner", "title": "Open in Designer", "category": "Vertepnyk", "icon": "$(type-hierarchy)" },
+      { "command": "vertepnyk.openTextBeside", "title": "Open Text Editor to the Side", "category": "Vertepnyk", "icon": "$(open-preview)" },
+      { "command": "vertepnyk.relayout", "title": "Re-layout Chart", "category": "Vertepnyk", "icon": "$(layout)" },
+      { "command": "vertepnyk.simStart", "title": "Start Simulation", "category": "Vertepnyk", "icon": "$(debug-start)" },
+      { "command": "vertepnyk.simReset", "title": "Reset Simulation", "category": "Vertepnyk", "icon": "$(debug-restart)" },
+      { "command": "vertepnyk.simStep", "title": "Simulation: Step Forward", "category": "Vertepnyk", "icon": "$(debug-step-over)" },
+      { "command": "vertepnyk.simBack", "title": "Simulation: Step Back", "category": "Vertepnyk", "icon": "$(debug-step-back)" },
+      { "command": "vertepnyk.exportSvg", "title": "Export Canvas as SVG", "category": "Vertepnyk", "icon": "$(file-media)" }
+    ],
+    "menus": {
+      "commandPalette": [
+        { "command": "vertepnyk.openDesigner", "when": "resourceFilename =~ /\\.(scxml|vt\\.ya?ml)$/" },
+        { "command": "vertepnyk.openTextBeside", "when": "activeCustomEditorId == 'vertepnyk.designer'" },
+        { "command": "vertepnyk.relayout", "when": "activeCustomEditorId == 'vertepnyk.designer'" },
+        { "command": "vertepnyk.simStart", "when": "activeCustomEditorId == 'vertepnyk.designer'" },
+        { "command": "vertepnyk.simReset", "when": "activeCustomEditorId == 'vertepnyk.designer'" },
+        { "command": "vertepnyk.simStep", "when": "activeCustomEditorId == 'vertepnyk.designer'" },
+        { "command": "vertepnyk.simBack", "when": "activeCustomEditorId == 'vertepnyk.designer'" },
+        { "command": "vertepnyk.exportSvg", "when": "activeCustomEditorId == 'vertepnyk.designer'" }
+      ],
+      "editor/title": [
+        { "command": "vertepnyk.openDesigner", "when": "resourceFilename =~ /\\.(scxml|vt\\.ya?ml)$/ && activeCustomEditorId != 'vertepnyk.designer'", "group": "navigation@1" },
+        { "command": "vertepnyk.openTextBeside", "when": "activeCustomEditorId == 'vertepnyk.designer'", "group": "navigation@1" },
+        { "command": "vertepnyk.simStart", "when": "activeCustomEditorId == 'vertepnyk.designer'", "group": "navigation@2" },
+        { "command": "vertepnyk.relayout", "when": "activeCustomEditorId == 'vertepnyk.designer'", "group": "navigation@3" }
+      ],
+      "explorer/context": [
+        { "command": "vertepnyk.openDesigner", "when": "resourceFilename =~ /\\.(scxml|vt\\.ya?ml)$/", "group": "navigation@9" }
+      ],
+      "file/newFile": [
+        { "command": "vertepnyk.newScxml" },
+        { "command": "vertepnyk.newYaml" }
+      ]
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc -p . --noEmit",
+    "build": "node build.mjs",
+    "package": "node build.mjs && vsce package --no-dependencies --allow-missing-repository --skip-license -o vertepnyk-vscode.vsix",
+    "test:integration": "node build.mjs && node test/integration/run.mjs"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.6.0",
+    "esbuild": "^0.25.0"
+  },
+  "dependencies": {
+    "@vertepnyk/core": "workspace:*",
+    "@vertepnyk/designer": "workspace:*",
+    "@vertepnyk/host-bridge": "workspace:*",
+    "@vertepnyk/sim": "workspace:*",
+    "@vertepnyk/layout": "workspace:*"
+  }
+}

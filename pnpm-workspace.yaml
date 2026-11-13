@@ -11,3 +11,6 @@ overrides:
 allowBuilds:
   esbuild: true
   electron: true
+  '@vscode/vsce-sign': false
+  electron-winstaller: false
+  keytar: false
