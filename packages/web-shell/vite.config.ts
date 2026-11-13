@@ -76,7 +76,7 @@ export default defineConfig({
   optimizeDeps: { exclude: ["@vertep/web", "@vertep/dm-ecma"] },
   server: {
     port: Number(process.env.PORT ?? 5173),
-    fs: { allow: [workspace, resolve(workspace, "../vertep-layout-ns")] },
+    fs: { allow: [workspace, resolve(workspace, "../vertep")] },
   },
   preview: { port: Number(process.env.PORT ?? 4173) },
 });

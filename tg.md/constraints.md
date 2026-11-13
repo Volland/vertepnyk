@@ -74,5 +74,5 @@ Obsidian starts Web Workers with Node integration, so inside a worker `process.v
 
 - constrains:: [[decisions#Obsidian assets are compiled into main.js]] {strength: must, source: "Obsidian 1.14 desktop, observed 2026-11-13"}
 
-`@vertep/web`'s worker does exactly that and imports `node:worker_threads`, which fails in a Blob worker, so the engine never started and validation stayed at "checking". The plugin build replaces that check in the bundled worker.
+`@vertep/web` 0.1.3's worker did exactly that and imported `node:worker_threads`, which fails in a Blob worker, so the engine never started and validation stayed at "checking". Vertep 0.1.4 treats any `WorkerGlobalScope` as a Web Worker; the plugin build now refuses an older `@vertep/web` instead of patching it.
 

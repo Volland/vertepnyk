@@ -22,7 +22,7 @@ Work in vertep that vertepnyk needs: the reserved layout namespace in its SCXML 
 
 - precedes:: [[roadmap#M1 Designer core]]
 
-Tasks 0.1 to 0.4 of the OpenSpec change `designer-core`. The layout namespace is done on vertep branch `layout-namespace` (not merged); publishing `@vertep/web` to npm is still open.
+Tasks 0.1 to 0.4 of the OpenSpec change `designer-core`. The layout namespace shipped in vertep 0.1.4; publishing `@vertep/web` to npm is still open.
 
 ## M1 Designer core
 
@@ -58,7 +58,7 @@ A virtual clock for delayed events, live context editing and recorded scenarios 
 
 ## Status 2026-11-13
 
-M1 to M5 are implemented and every one of the 71 requirements is implemented and verified. Open: merging vertep `layout-namespace`, publishing `@vertep/web`, publishing the extensions, and the known limitations below.
+M1 to M5 are implemented and every one of the 71 requirements is implemented and verified. Open: publishing `@vertep/web` to npm, the Obsidian community listing, and the known limitations below.
 
 Known limitations: automatic layout is written into the file when it opens, so a fresh chart is modified, and in VS Code an undo takes two presses; `.vt.yaml` cannot be bound by extension in Obsidian or Electron.
 

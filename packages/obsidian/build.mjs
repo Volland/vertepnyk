@@ -82,18 +82,17 @@ await build({
           const src = readFileSync(args.path, "utf8");
           const out = src
             .replace(/new URL\(`\.\.\/wasm\/\$\{kind\}\/vertep_wasm\.js`, import\.meta\.url\)\.href/, () => (patched++, "globalThis.__VERTEP_BUILDS[kind].glue"))
-            .replace(/new URL\(`\.\.\/wasm\/\$\{kind\}\/vertep_wasm_bg\.wasm`, import\.meta\.url\)\.href/, () => (patched++, "globalThis.__VERTEP_BUILDS[kind].wasm"))
-            // Obsidian runs Web Workers with Node integration, so `process.versions.node` is set and
-            // there is no `window`: the worker would take its Node branch and import
-            // node:worker_threads, which fails in a Blob worker. Here it is always a Web Worker.
-            .replace(/const isNode = typeof process !== "undefined" && !!process\.versions\?\.node && typeof globalThis\.window === "undefined";/, () => (patched++, "const isNode = false;"));
+            .replace(/new URL\(`\.\.\/wasm\/\$\{kind\}\/vertep_wasm_bg\.wasm`, import\.meta\.url\)\.href/, () => (patched++, "globalThis.__VERTEP_BUILDS[kind].wasm"));
+          // Obsidian runs Web Workers with Node integration; @vertep/web 0.1.4 and later see the
+          // WorkerGlobalScope and stay on the Web Worker path. An older build would not.
+          if (!/WorkerGlobalScope/.test(src)) throw new Error("@vertep/web is older than 0.1.4: its worker takes the Node path in Obsidian");
           return { contents: out, loader: "js", resolveDir: dirname(args.path) };
         });
       },
     },
   ],
 });
-if (patched !== 3) throw new Error(`vertep's worker changed: expected 3 patches (two WebAssembly lookups and the Node check), made ${patched}`);
+if (patched !== 2) throw new Error(`vertep's worker changed: expected 2 patches (the two WebAssembly lookups), made ${patched}`);
 
 // ---- WebAssembly builds and static files ----------------------------------------------------
 const copy = (from, to) => {

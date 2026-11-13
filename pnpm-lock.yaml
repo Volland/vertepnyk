@@ -5,8 +5,8 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@vertep/web': link:../vertep-layout-ns/bindings/js/packages/web
-  '@vertep/dm-ecma': link:../vertep-layout-ns/bindings/js/packages/dm-ecma
+  '@vertep/web': link:../vertep/bindings/js/packages/web
+  '@vertep/dm-ecma': link:../vertep/bindings/js/packages/dm-ecma
 
 importers:
 
@@ -185,11 +185,11 @@ importers:
   packages/sim:
     dependencies:
       '@vertep/dm-ecma':
-        specifier: link:../../../vertep-layout-ns/bindings/js/packages/dm-ecma
-        version: link:../../../vertep-layout-ns/bindings/js/packages/dm-ecma
+        specifier: link:../../../vertep/bindings/js/packages/dm-ecma
+        version: link:../../../vertep/bindings/js/packages/dm-ecma
       '@vertep/web':
-        specifier: link:../../../vertep-layout-ns/bindings/js/packages/web
-        version: link:../../../vertep-layout-ns/bindings/js/packages/web
+        specifier: link:../../../vertep/bindings/js/packages/web
+        version: link:../../../vertep/bindings/js/packages/web
 
   packages/vscode:
     dependencies:

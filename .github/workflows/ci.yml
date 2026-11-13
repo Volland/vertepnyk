@@ -18,15 +18,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: Volland/vertep
-          # the layout namespace (vertep milestone M0) lives on this branch until it is merged
-          ref: layout-namespace
-          path: vertep-layout-ns
+          # the first vertep release with the layout namespace and the Web Worker fix
+          ref: v0.1.4
+          path: vertep
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: vertep-layout-ns
+          workspaces: vertep
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -34,7 +34,7 @@ jobs:
         with:
           version: 11
       - name: Build @vertep/web
-        working-directory: vertep-layout-ns/bindings/js
+        working-directory: vertep/bindings/js
         run: npm ci && npm run build
       - name: Install
         working-directory: vertepnyk

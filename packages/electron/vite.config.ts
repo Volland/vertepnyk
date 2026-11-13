@@ -62,5 +62,5 @@ export default defineConfig({
     chunkSizeWarningLimit: 2500,
     modulePreload: { polyfill: false },
   },
-  server: { fs: { allow: [workspace, resolve(workspace, "../vertep-layout-ns")] } },
+  server: { fs: { allow: [workspace, resolve(workspace, "../vertep")] } },
 });

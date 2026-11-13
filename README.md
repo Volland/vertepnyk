@@ -35,7 +35,7 @@ pnpm --filter vertepnyk-vscode run package     # VS Code extension (.vsix)
 pnpm --filter vertepnyk-electron run dist      # desktop app for this OS
 ```
 
-Until `@vertep/web` and `@vertep/dm-ecma` are on npm, `pnpm-workspace.yaml` links them from a sibling vertep checkout (`../vertep-layout-ns`, branch `layout-namespace`); build them first with `npm run build` in its `bindings/js`.
+Until `@vertep/web` and `@vertep/dm-ecma` are on npm, `pnpm-workspace.yaml` links them from a sibling vertep checkout (`../vertep`, 0.1.4 or later); build them first with `npm run build` in its `bindings/js`.
 
 ## Status
 
