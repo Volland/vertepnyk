@@ -33,6 +33,9 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 11
+      - name: wasm-bindgen CLI at vertep's pinned version
+        shell: bash
+        run: cargo install wasm-bindgen-cli --locked --version "$(sed -n 's/^wasm-bindgen = "=\(.*\)"/\1/p' vertep/crates/vertep-wasm/Cargo.toml)"
       - name: Build @vertep/web
         working-directory: vertep/bindings/js
         run: npm ci && npm run build
