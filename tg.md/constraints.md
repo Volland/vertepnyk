@@ -52,7 +52,9 @@ VS Code selects a custom editor by filename pattern, never by file content, and 
 
 ## vertep WASM gaps worked around in sim
 
-Found while building the simulator: `@vertep/web` has no fork call, `can` is false before the first journal entry, raised internal events and done data are not reported, an ill-typed payload at `send` is not rejected, and `onTransition` skips steps that took no transition.
+`@vertep/web` lacks a fork call, answers `can` only after the first journal entry, hides raised events and done data, and accepts ill-typed payloads at `send`.
+
+`onTransition` also skips steps that took no transition.
 
 - constrains:: [[decisions#Simulation v1 with time travel]] {strength: must, source: "vertep bindings/js/packages/web, found 2026-11-13"}
 
