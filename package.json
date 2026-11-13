@@ -20,6 +20,10 @@
   "devDependencies": {
     "@types/node": "^22.10.0",
     "typescript": "~5.9.3",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "vite": "^7.1.0",
+    "vite-plugin-solid": "^2.11.8",
+    "happy-dom": "^18.0.1",
+    "@playwright/test": "^1.55.0"
   }
 }

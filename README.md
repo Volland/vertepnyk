@@ -1,4 +1,8 @@
-# Vertepnyk
+<p align="center">
+  <img src="assets/logo.svg" alt="Vertepnyk: the puppeteer in the vertep under the Christmas star" width="160">
+</p>
+
+<h1 align="center">Vertepnyk</h1>
 
 A visual designer and simulator for [vertep](https://github.com/Volland/vertep) statecharts: draw a chart, edit it, validate it and drive it with events, without writing code.
 

@@ -1,0 +1,11 @@
+{
+  "name": "@vertepnyk/designer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The composed designer UI behind the host bridge",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc -p . --noEmit", "build": "tsc -p ." },
+  "dependencies": { "@vertepnyk/core": "workspace:*", "@vertepnyk/layout": "workspace:*", "@vertepnyk/sim": "workspace:*", "@vertepnyk/canvas": "workspace:*", "@vertepnyk/inspector": "workspace:*", "@vertepnyk/host-bridge": "workspace:*", "solid-js": "^1.9.9" }
+}

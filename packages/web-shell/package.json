@@ -1,0 +1,30 @@
+{
+  "name": "@vertepnyk/web-shell",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Browser page hosting the designer",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p . --noEmit",
+    "build": "vite build",
+    "dev": "vite",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@vertepnyk/designer": "workspace:*",
+    "@vertepnyk/core": "workspace:*",
+    "@vertepnyk/host-bridge": "workspace:*",
+    "@vertepnyk/sim": "workspace:*",
+    "@vertepnyk/layout": "workspace:*",
+    "solid-js": "^1.9.9",
+    "codemirror": "^6.0.1",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/view": "^6.38.0",
+    "@codemirror/lang-xml": "^6.1.0",
+    "@codemirror/lang-yaml": "^6.1.2"
+  }
+}

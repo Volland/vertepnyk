@@ -46,3 +46,4 @@ export {
   type StepEvent,
   Simulator,
 } from "./simulator.js";
+export type { JsonValue } from "@vertep/web";
