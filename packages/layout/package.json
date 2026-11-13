@@ -1,0 +1,11 @@
+{
+  "name": "@vertepnyk/layout",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Automatic layout of nested statecharts with elkjs, in a worker",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "exports": { ".": "./src/index.ts", "./worker": "./src/worker.ts" },
+  "scripts": { "typecheck": "tsc -p . --noEmit", "build": "tsc -p ." },
+  "dependencies": { "elkjs": "^0.10.0" }
+}

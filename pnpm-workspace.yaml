@@ -1,0 +1,13 @@
+packages:
+  - "packages/*"
+
+# Development override: use the sibling vertep checkout's built packages until
+# @vertep/web and @vertep/dm-ecma are on npm (see tg.md decisions "Depend on published
+# vertep packages"). Build them with `npm run build` in ../vertep/bindings/js.
+overrides:
+  "@vertep/web": "link:../vertep/bindings/js/packages/web"
+  "@vertep/dm-ecma": "link:../vertep/bindings/js/packages/dm-ecma"
+
+allowBuilds:
+  esbuild: true
+  electron: true

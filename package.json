@@ -1,0 +1,25 @@
+{
+  "name": "vertepnyk-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Visual designer and simulator for vertep statecharts",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "packageManager": "pnpm@11.24.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter './packages/**' run build",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "vitest run",
+    "test:e2e": "pnpm --filter @vertepnyk/web-shell run test:e2e",
+    "dev": "pnpm --filter @vertepnyk/web-shell run dev",
+    "check:graph": "tg check && tg ontology check && openspec validate --all --strict"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "~5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

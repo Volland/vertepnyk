@@ -1,0 +1,11 @@
+{
+  "name": "@vertepnyk/sim",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Validation and simulation of charts on vertep's WebAssembly interpreter",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc -p . --noEmit", "build": "tsc -p ." },
+  "dependencies": { "@vertep/web": "^0.1.1", "@vertep/dm-ecma": "^0.1.1" }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@vertepnyk/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Format-preserving chart document model for SCXML and vertep YAML: syntax trees, semantic view, edit commands, undo, layout data",
+  "license": "MIT OR Apache-2.0",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc -p . --noEmit", "build": "tsc -p ." },
+  "dependencies": { "yaml": "^2.8.1" }
+}

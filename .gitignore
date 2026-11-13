@@ -1,9 +1,9 @@
-node_modules/
-dist/
-out/
-.vite/
-coverage/
-*.vsix
-release/
 .DS_Store
 .tg/
+.vite/
+*.vsix
+coverage/
+dist/
+node_modules/
+out/
+release/
